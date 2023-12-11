@@ -14,13 +14,13 @@ import logging.handlers
 # Define the directory to copy and save files on the SSD
 #ssd_directory_path = 'D:/HDD Stuff/python/zst/comment_csvs/'
 
-input_path = 'data/zsts/'
+input_path = '/media/paul/EXTERNAL_US/reddit/comments'
 output_path = 'data/csvs/'
 
 # List all .zst files in the HDD directory [
 zst_files = [f for f in os.listdir(input_path) if f.endswith('.zst')]
 print(zst_files)
-# Check if any of the files have already been processes, and if so, remove from the file list
+# Check if any of the files have already been processed, and if so, remove from the file list
 existing_files = [f for f in os.listdir(output_path) if f.endswith('.csv')]
 existing_files = [filename.replace('.csv', '.zst') for filename in existing_files]
 
@@ -31,7 +31,7 @@ existing_files = set(existing_files)
 zst_files = [item for item in zst_files if item not in existing_files]
 
 # Number of CPU cores to use (change as needed)
-num_cores = cpu_count() - 2
+#num_cores = cpu_count() - 2
 
 # Search term for processing (e.g., "europe")
 search_terms = "europe"
@@ -75,7 +75,7 @@ def read_lines_zst(file_name):
 
 def get_time():
     now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
+    current_time = datetime.now().strftime("%H:%M:%S")
     #print("Current Time =", current_time)
     return(current_time)
 
@@ -110,24 +110,12 @@ for zst_file in tqdm(zst_files):
         file_bytes_processed = 0
         file_lines_saved = 0
         created = None
-        #field = "subreddit"
-        #value = "wallstreetbets"
         bad_lines = 0
         # try:
         for line, file_bytes_processed in read_lines_zst(file_path):
             try:
                 obj = json.loads(line)
                 created = datetime.utcfromtimestamp(int(obj['created_utc']))
-                #temp = obj[field] == value
-                # Do something with the object
-                #if 'body' in obj and search_term in obj['body'].lower():
-                #if 'body' in obj and search_term in obj['body'].lower() and 'author' in obj ):
-                #if ('body' in obj and search_term in obj['body'].lower()) and (obj['author'] != "AutoModerator"):    
-                #    
-                #    #df = pd.concat([df, pd.DataFrame([obj])], ignore_index=True)
-                #    list_of_lines.append(obj)
-                #    file_lines_saved = file_lines_saved + 1
-                
                 if 'body' in obj and (obj['author'] != "AutoModerator"):
                     
                     if search_terms in obj['body'].lower():
