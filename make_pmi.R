@@ -70,6 +70,20 @@ rels_tq$score <- rels_tq$log_dpf
 tmp <- filter(rels_tq, focal=="eu")
 t2 <- filter(rels_tq, focal=="uk")
 
+# add distance transform from similarity to use in shortest paths
+# Sample dataframe with similarity values
+
+
+# Shift similarity values to make them non-negative
+max_similarity <- max(rels_tq$score)
+rels_tq$distance <-(max_similarity+1) - rels_tq$score
+
+# Optionally, scale the distance values
+# For example, to scale to a range [0, 1], uncomment the following line:
+# df$distance <- df$distance / max(df$distance)
+
+
+
 
 arrow::write_parquet(rels_tq, 'continent-all-periods-scored.parquet')
 

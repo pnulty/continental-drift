@@ -72,7 +72,7 @@ stopwords = frozenset(nltk.corpus.stopwords.words("english"))
 punct = "'.,;?!\""
 min_freq = 20
 vocab = collections.Counter()
-max_iterations = 100
+
 periods = {"2009-11":("2009","2010","2011"),"2012-14":("2012","2013","2014"),"2015-17":("2015","2016","2017"),"2018-20":("2018","2019","2020")}
 
 for p in periods:

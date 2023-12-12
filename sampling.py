@@ -84,7 +84,7 @@ for zst_file in tqdm(zst_files):
         # trying to get every ith line to sample across the whole month.
         # will still over-represent early dates in the month, need to 
         # work with uncompressed files to do this properly.
-        if i % 12 != 0:
+        if i % 20 != 0:
             continue
         if saved_lines >= monthly_sample_size:
             break

@@ -138,7 +138,7 @@ shinyServer(function(input, output) {
     print(ft)
     print(summary(ft))
     if(input$sp_weights){
-      tmp <- shortest_paths(g, ft[1], ft[2])
+      tmp <- shortest_paths(g, ft[1], ft[2], weights = NA)
     }else{
       tmp <- shortest_paths(g, ft[1], ft[2], weights = NA)
     }
@@ -164,7 +164,7 @@ shinyServer(function(input, output) {
     }
     merged <- delete.vertices(merged, V(merged)[ degree(merged) < input$prune_slide] )
     
-    bc <- estimate_betweenness(merged, cutoff = input$cent_cutoff)
+    bc <- estimate_betweenness(merged, cutoff = input$cent_cutoff, weights=NA)
     bdcf8 <- data.frame(bc, names(bc)) %>% arrange(desc(bc))
     bdcf8$rank <- seq(1, nrow(bdcf8))
     p1 <- ggplot(bdcf8[1:20,], aes(x = rank, y = bc, label=names.bc. )) + geom_point() + geom_label_repel()
