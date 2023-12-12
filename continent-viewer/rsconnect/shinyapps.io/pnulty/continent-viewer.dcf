@@ -1,0 +1,13 @@
+name: continent-viewer
+title: continent-viewer
+username:
+account: pnulty
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10784099
+bundleId: 8041414
+url: https://pnulty.shinyapps.io/continent-viewer/
+when: 1702405950.37392
+lastSyncTime: 1702405950.37393
+asMultiple: FALSE
+asStatic: FALSE

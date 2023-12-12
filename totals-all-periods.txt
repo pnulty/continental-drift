@@ -168,6 +168,7 @@ national 	 3070
 department 	 389
 responsible 	 915
 policy 	 1878
+eu 	 44340
 parliament 	 848
 elections 	 499
 groups 	 1900
@@ -1222,6 +1223,7 @@ unions 	 301
 chances 	 470
 become 	 3719
 hardly 	 797
+uk 	 7922
 specialists 	 33
 weddings 	 20
 corporate 	 554

@@ -32,7 +32,7 @@ def count_coocs_texts(doc_list, vocab):
     return coocs
 
 
-def tokenize_text(text, stopwords=frozenset(), punct="", min_chars=4, phrases=False):
+def tokenize_text(text, stopwords=frozenset(), punct="", min_chars=4, phrases=False, minchar_exceptions=frozenset()):
     """
     Tokenizes a text into a list of words. Filters out stopwords and punctuation.
     """
@@ -48,7 +48,7 @@ def tokenize_text(text, stopwords=frozenset(), punct="", min_chars=4, phrases=Fa
             w not in stopwords
             and w.isalpha()
             and w not in punct
-            and len(w) >= min_chars
+            and (len(w) >= min_chars or w in minchar_exceptions)
         ):
             words.append(w)
     return words
@@ -66,7 +66,8 @@ def preview_coocs(coocs, term="democracy"):
 #
 # SETUP
 #
-lang = "fr"
+
+abbrevs = frozenset(['uk','eu'])
 stopwords = frozenset(nltk.corpus.stopwords.words("english"))
 punct = "'.,;?!\""
 min_freq = 20
@@ -90,7 +91,7 @@ for p in periods:
             print(file)
             df = pd.read_csv(os.path.join("csvs",p,file), encoding="utf-8", encoding_errors="replace")
             df['body'] = df['body'].astype(str).str.lower()
-            tokens = df["body"].apply(lambda x: tokenize_text(x, stopwords, punct=punct))
+            tokens = df["body"].apply(lambda x: tokenize_text(x, stopwords, punct=punct, minchar_exceptions=abbrevs))
             for t in tokens:
                 vocab.update(t)
 
@@ -109,12 +110,12 @@ with open("totals-all-periods.txt", "w", encoding="utf-8") as out:
 #
 print("counting co-occurrences")
 min_cooc = 5
-
+coocs = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
 for p in periods:
     directory_path = os.path.join("csvs",p)
     file_count = sum(len(files) for _, _, files in os.walk(directory_path))
     i = 0
-    coocs = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
+    
     files = [f for f in os.listdir(directory_path) if f.endswith('.csv')]
     with tqdm(total=file_count) as pbar:
         for file in files:
@@ -145,6 +146,6 @@ for year in coocs:
                 )
 
 print("writing to parquet")
-fastparquet.write("continent-coocs-allperiods.parquet", pd.DataFrame(rows_list))
+fastparquet.write("continent-coocs-all-periods.parquet", pd.DataFrame(rows_list))
 #feather.write_feather(tmp, "un-coocs_all_yearhome_600_30.feather", version=1)
 # feather.write_feather(tmp, '/home/paul/Dropbox/newest2023/networks/viewer/un-coocs_all_year.feather', version=1)

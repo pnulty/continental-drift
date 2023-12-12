@@ -6,11 +6,11 @@ library(quanteda)
 library(tidyverse)
 
 source('scorers.R')
-rels <- arrow::read_parquet("continent-coocs-allperiods.parquet")# %>% filter(str_detect(bound, paste(stopwords, collapse="|"), negate=TRUE) )
+rels <- arrow::read_parquet("continent-coocs-all-periods.parquet")# %>% filter(str_detect(bound, paste(stopwords, collapse="|"), negate=TRUE) )
 #r2 <- arrow::read_parquet("un-coocs-fr-yearcounts2002after.parquet")
 #rels <- rbind(rels, r2)
 #window_size <- 200
-tmp <- filter(rels, focal=="haiti")
+tmp <- filter(rels, focal=="brexit")
 
 # independent frequencies of focal and bound
 focal_fs <- group_by(rels, focal) %>% summarize(count = sum(count)) %>% ungroup
@@ -67,8 +67,8 @@ cut_off <- quantile(rels$score, .78)
 rels_tq <- filter(rels, score > cut_off)  %>% mutate(across(is.numeric, round, digits=3))
 
 rels_tq$score <- rels_tq$log_dpf 
-tmp <- filter(rels_tq, focal=="ireland")
-t2 <- filter(rels_tq, focal=="brexit")
+tmp <- filter(rels_tq, focal=="eu")
+t2 <- filter(rels_tq, focal=="uk")
 
 
 arrow::write_parquet(rels_tq, 'continent-all-periods-scored.parquet')

@@ -16,7 +16,7 @@ library(visNetwork)
 config_panel <- tabPanel("Configuration",
                          
                          radioButtons('measure_radio', 'measure', inline=TRUE, choices = c('log-dpf','t-score','dpf', 'pmi','n-pmi','pmi-sig','pmis')),
-                         selectInput('dataset', 'Dataset', choices=c('UN Corpus')),
+                         selectInput('dataset', 'Dataset', choices=c('EU reddit corpus')),
                          tags$hr(),
                          sliderInput("conc", label = 'Concreteness threshold', min = 0, max = 5, value = 4.5, step = 0.1),
                          sliderInput("label_size", label = '2D node label size', min = 0, max = 8, value = 3, step = 0.1),
@@ -88,16 +88,16 @@ communities_panel <- tabPanel("Communities",
 
 # Header elements for the visualization
 header <- dashboardHeader(title = "EU reddit Corpus", disable = FALSE)
-rels <- arrow::read_parquet(file.path('data','continent-coocs-allperiods.parquet'))
+rels <- arrow::read_parquet(file.path('data','continent-all-periods-scored.parquet'))
 
 # Sidebar elements for the search visualizations
 sidebar <- dashboardSidebar(
  # selectizeInput('term', 'Search term(s):', sort(unique(rels$focal)), selected = NULL, multiple = TRUE,
   #               options = NULL),
-  textInput('term', 'Search term(s):', value = "climate democracy growth"),
+  textInput('term', 'Search term(s):', value = "eu europe brexit"),
   sliderInput("thresh", label = 'Score threshold ', min = -1, max = 4, value = 0.0, step = 0.1),
   sliderInput("rank", label = 'Rank threshold ', min = 0, max = 50, value = 20, step = 1),
-  selectInput('time_period', 'Time Period', choices=c(1990,1995,2000,2005,2010), selected=1990),
+  selectInput('time_period', 'Time Period', choices=c("2009-11","2012-14","2015-17","2018-20"), selected="2015-17"),
   conditionalPanel(condition = "input.tabs!= null && input.tabs == 'Network 3D'", 
                    textInput('highlight', 'Highlight node:', value = "") ),
   

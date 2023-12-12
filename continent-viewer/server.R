@@ -87,9 +87,10 @@ shinyServer(function(input, output) {
     conc <- read_tsv('data/concreteness.txt') %>% filter(Bigram == 0, Conc.M < input$conc)
     output$user_feedback <- renderText({'updating main data file... reading data.'})
     if(input$dataset == 'EU reddit corpus'){
-      cur_file <- file.path('data','continent-coocs-allperiods.parquet')
+      cur_file <- file.path('data','continent-all-periods-scored.parquet')
     }
-    rels <- arrow::read_parquet(paste0('data/',cur_file)) 
+    rels <- arrow::read_parquet(cur_file) 
+    print(summary(rels))
 
     output$loaded_file <- renderText({cur_file})
     output$user_feedback <- renderText({'updating main data file... sorting'})

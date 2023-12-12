@@ -52,7 +52,7 @@ periods = {"2009-11":("2009","2010","2011"),"2012-14":("2012","2013","2014"),"20
 # Search term for processing (e.g., "europe")
 search_terms = "europe"
 search_tokens = r'\beu\b'
-monthly_sample_size = 1000
+monthly_sample_size = 2000
 period = "2018-20"
 
 zst_files = [f for f in os.listdir(zst_path) if f.endswith('.zst') and f[3:7] in periods[period]]
@@ -81,10 +81,10 @@ for zst_file in tqdm(zst_files):
     
     for line, file_bytes_processed in read_lines_zst(file_path):
         i+=1
-        # trying to get every 3rd line to sample across the whole month.
+        # trying to get every ith line to sample across the whole month.
         # will still over-represent early dates in the month, need to 
         # work with uncompressed files to do this properly.
-        if i % 20 != 0:
+        if i % 12 != 0:
             continue
         if saved_lines >= monthly_sample_size:
             break
