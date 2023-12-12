@@ -4,6 +4,7 @@ import nltk
 import pandas as pd
 import phrasemachine
 import os
+import py3langid as langid
 import xml.etree.ElementTree as ET
 from pyarrow import feather
 from tqdm import tqdm
@@ -37,6 +38,8 @@ def tokenize_text(text, stopwords=frozenset(), punct="", min_chars=4, phrases=Fa
     Tokenizes a text into a list of words. Filters out stopwords and punctuation.
     """
     words = []
+    if langid.classify(text)[0] != "en":
+        return words
     if phrases:
         mwes = phrasemachine.get_phrases(text, max_phrase_length=5)
         print(mwes)
@@ -70,7 +73,7 @@ def preview_coocs(coocs, term="democracy"):
 abbrevs = frozenset(['uk','eu'])
 stopwords = frozenset(nltk.corpus.stopwords.words("english"))
 punct = "'.,;?!\""
-min_freq = 20
+min_freq = 50
 vocab = collections.Counter()
 
 periods = {"2009-11":("2009","2010","2011"),"2012-14":("2012","2013","2014"),"2015-17":("2015","2016","2017"),"2018-20":("2018","2019","2020")}
@@ -89,7 +92,7 @@ for p in periods:
         for file in files:
             pbar.update(1)
             print(file)
-            df = pd.read_csv(os.path.join("csvs",p,file), encoding="utf-8", encoding_errors="replace")
+            df = pd.read_csv(os.path.join("csvs",p,file), encoding="utf-8", encoding_errors="replace", lineterminator='\n')
             df['body'] = df['body'].astype(str).str.lower()
             tokens = df["body"].apply(lambda x: tokenize_text(x, stopwords, punct=punct, minchar_exceptions=abbrevs))
             for t in tokens:
@@ -121,7 +124,7 @@ for p in periods:
         for file in files:
             pbar.update(1)
             print(file)
-            df = pd.read_csv(os.path.join("csvs",p,file))
+            df = pd.read_csv(os.path.join("csvs",p,file), encoding="utf-8", encoding_errors="replace", lineterminator='\n')
             df['body'] = df['body'].astype(str).str.lower()
             tmp = count_coocs_texts(df['body'].tolist(), cut_vocab)
             for word1 in tmp:

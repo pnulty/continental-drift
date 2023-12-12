@@ -210,7 +210,6 @@ shinyServer(function(input, output) {
     ego_node <- tmp[tmp!=''] 
     sublist <- make_ego_graph(g, input$network_steps, ego_node, mode = "all")
     merged <- do.call(igraph::union, sublist)
-
     draw_network2D(merged)
   })  
   

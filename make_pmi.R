@@ -10,7 +10,7 @@ rels <- arrow::read_parquet("continent-coocs-all-periods.parquet")# %>% filter(s
 #r2 <- arrow::read_parquet("un-coocs-fr-yearcounts2002after.parquet")
 #rels <- rbind(rels, r2)
 #window_size <- 200
-tmp <- filter(rels, focal=="brexit")
+t1 <- filter(rels, focal=="brexit")
 
 # independent frequencies of focal and bound
 focal_fs <- group_by(rels, focal) %>% summarize(count = sum(count)) %>% ungroup
@@ -67,7 +67,7 @@ cut_off <- quantile(rels$score, .78)
 rels_tq <- filter(rels, score > cut_off)  %>% mutate(across(is.numeric, round, digits=3))
 
 rels_tq$score <- rels_tq$log_dpf 
-tmp <- filter(rels_tq, focal=="eu")
+tmp <- filter(rels_tq, focal=="brexit")
 t2 <- filter(rels_tq, focal=="uk")
 
 # add distance transform from similarity to use in shortest paths
