@@ -6,7 +6,7 @@ library(quanteda)
 library(tidyverse)
 
 source('scorers.R')
-rels <- arrow::read_parquet("continent-coocs-2009-11.parquet")# %>% filter(str_detect(bound, paste(stopwords, collapse="|"), negate=TRUE) )
+rels <- arrow::read_parquet("continent-coocs-allperiods.parquet")# %>% filter(str_detect(bound, paste(stopwords, collapse="|"), negate=TRUE) )
 #r2 <- arrow::read_parquet("un-coocs-fr-yearcounts2002after.parquet")
 #rels <- rbind(rels, r2)
 #window_size <- 200
@@ -71,7 +71,7 @@ tmp <- filter(rels_tq, focal=="ireland")
 t2 <- filter(rels_tq, focal=="brexit")
 
 
-arrow::write_parquet(rels_tq, 'un-coocs-fr-scored-year.parquet')
+arrow::write_parquet(rels_tq, 'continent-all-periods-scored.parquet')
 
 #write_feather(rels, 'latest-scored.feather')
 

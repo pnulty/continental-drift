@@ -2,6 +2,7 @@ import collections
 import fastparquet
 import nltk
 import pandas as pd
+import phrasemachine
 import os
 import xml.etree.ElementTree as ET
 from pyarrow import feather
@@ -31,11 +32,14 @@ def count_coocs_texts(doc_list, vocab):
     return coocs
 
 
-def tokenize_text(text, stopwords=frozenset(), punct="", min_chars=4):
+def tokenize_text(text, stopwords=frozenset(), punct="", min_chars=4, phrases=False):
     """
     Tokenizes a text into a list of words. Filters out stopwords and punctuation.
     """
     words = []
+    if phrases:
+        mwes = phrasemachine.get_phrases(text, max_phrase_length=5)
+        print(mwes)
     for w in nltk.regexp_tokenize(text, pattern="\s+", gaps=True, discard_empty=True):
         # words shorter than three letters are omitted, words of exactly three letters are
         # only included if they are in the valid_words set
