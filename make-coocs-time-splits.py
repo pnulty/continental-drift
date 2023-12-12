@@ -65,41 +65,37 @@ def preview_coocs(coocs, term="democracy"):
 lang = "fr"
 stopwords = frozenset(nltk.corpus.stopwords.words("english"))
 punct = "'.,;?!\""
-min_freq = 10
+min_freq = 20
+vocab = collections.Counter()
+max_iterations = 100
 periods = {"2009-11":("2009","2010","2011"),"2012-14":("2012","2013","2014"),"2015-17":("2015","2016","2017"),"2018-20":("2018","2019","2020")}
 
-period = "2009-11"
-directory_path = os.path.join("csvs",period)
-
-file_count = sum(len(files) for _, _, files in os.walk(directory_path))
-vocab = collections.Counter()
-
-
-max_iterations = 100
-#
-# Build vocabulary
-#
-print("making vocab")
-docs = []
-i = 0
-files = [f for f in os.listdir(directory_path) if f.endswith('.csv')]
-with tqdm(total=file_count) as pbar:
-    for file in files:
-        pbar.update(1)
-        print(file)
-        df = pd.read_csv(os.path.join("csvs",period,file))
-        df['body'] = df['body'].str.lower()
-        tokens = df["body"].apply(lambda x: tokenize_text(x, stopwords, punct=punct))
-
-        for t in tokens:
-            vocab.update(t)
+for p in periods:
+    directory_path = os.path.join("csvs",p)
+    file_count = sum(len(files) for _, _, files in os.walk(directory_path))
+    #
+    # Build vocabulary
+    #
+    print("making vocab")
+    docs = []
+    i = 0
+    files = [f for f in os.listdir(directory_path) if f.endswith('.csv')]
+    with tqdm(total=file_count) as pbar:
+        for file in files:
+            pbar.update(1)
+            print(file)
+            df = pd.read_csv(os.path.join("csvs",p,file), encoding="utf-8", encoding_errors="replace")
+            df['body'] = df['body'].astype(str).str.lower()
+            tokens = df["body"].apply(lambda x: tokenize_text(x, stopwords, punct=punct))
+            for t in tokens:
+                vocab.update(t)
 
 # remove words that occur less than min_freq times
 cut_vocab = collections.Counter({k: c for k, c in vocab.items() if c >= min_freq})
 
 print(cut_vocab.most_common(50))
 
-with open("totals-"+period+".txt", "w", encoding="utf-8") as out:
+with open("totals-all-periods.txt", "w", encoding="utf-8") as out:
     for x in cut_vocab:
         out.write(x + " \t " + str(cut_vocab[x]) + "\n")
 
@@ -108,21 +104,23 @@ with open("totals-"+period+".txt", "w", encoding="utf-8") as out:
 # Count co-occurrences
 #
 print("counting co-occurrences")
-min_cooc = 10
+min_cooc = 5
 
-file_count = sum(len(files) for _, _, files in os.walk(directory_path))
-i = 0
-coocs = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
-files = [f for f in os.listdir(directory_path) if f.endswith('.csv')]
-with tqdm(total=file_count) as pbar:
-    for file in files:
-        pbar.update(1)
-        print(file)
-        df = pd.read_csv(os.path.join("csvs",period,file))
-        df['body'] = df['body'].str.lower()
-        tmp = count_coocs_texts(df['body'].tolist(), cut_vocab)
-        for word1 in tmp:
-                coocs[period][word1].update(tmp[word1])
+for p in periods:
+    directory_path = os.path.join("csvs",p)
+    file_count = sum(len(files) for _, _, files in os.walk(directory_path))
+    i = 0
+    coocs = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
+    files = [f for f in os.listdir(directory_path) if f.endswith('.csv')]
+    with tqdm(total=file_count) as pbar:
+        for file in files:
+            pbar.update(1)
+            print(file)
+            df = pd.read_csv(os.path.join("csvs",p,file))
+            df['body'] = df['body'].astype(str).str.lower()
+            tmp = count_coocs_texts(df['body'].tolist(), cut_vocab)
+            for word1 in tmp:
+                    coocs[p][word1].update(tmp[word1])
 
 
 preview_coocs(coocs)
@@ -143,6 +141,6 @@ for year in coocs:
                 )
 
 print("writing to parquet")
-fastparquet.write("continent-coocs-"+period+".parquet", pd.DataFrame(rows_list))
+fastparquet.write("continent-coocs-allperiods.parquet", pd.DataFrame(rows_list))
 #feather.write_feather(tmp, "un-coocs_all_yearhome_600_30.feather", version=1)
 # feather.write_feather(tmp, '/home/paul/Dropbox/newest2023/networks/viewer/un-coocs_all_year.feather', version=1)
