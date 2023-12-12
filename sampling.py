@@ -43,20 +43,19 @@ def read_and_decode(reader, chunk_size, max_window_size, previous_chunk=None, by
         log.info(f"Decoding error with {bytes_read:,} bytes, reading another chunk")
         return read_and_decode(reader, chunk_size, max_window_size, chunk, bytes_read)
 
-zst_path = "/media/paul/EXTERNAL_US/reddit2/reddit-academic-torrents/reddit/comments/"
+zst_path = "/media/paul/EXTERNAL_US/reddit2/reddit-academic-torrents/reddit/comments"
 output_path = "/media/paul/EXTERNAL_US/sampled-comments/"
 
-periods = {"2009-11":("2009","2010","2011"),"2012-14":("2012","2013","2014"),"2015-17":("2015","2016","2017"),"2019-2021":("2019","2020","2021")}
+periods = {"2009-11":("2009","2010","2011"),"2012-14":("2012","2013","2014"),"2015-17":("2015","2016","2017"),"2018-20":("2018","2019","2020")}
 
-months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
 
 # Search term for processing (e.g., "europe")
 search_terms = "europe"
 search_tokens = r'\beu\b'
 monthly_sample_size = 1000
-period = "2015-17"
+period = "2018-20"
 
-zst_files = [f for f in os.listdir(zst_path) if f.endswith('.zst') and f[3:7] in period]
+zst_files = [f for f in os.listdir(zst_path) if f.endswith('.zst') and f[3:7] in periods[period]]
 
 for zst_file in tqdm(zst_files):
     #start logs
