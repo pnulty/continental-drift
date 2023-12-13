@@ -5,9 +5,9 @@ account: pnulty
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10784099
-bundleId: 8041789
+bundleId: 8042034
 url: https://pnulty.shinyapps.io/continent-viewer/
-when: 1702412064.32401
-lastSyncTime: 1702412064.32403
+when: 1702416299.22806
+lastSyncTime: 1702416299.22807
 asMultiple: FALSE
 asStatic: FALSE

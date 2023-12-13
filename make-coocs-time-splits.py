@@ -38,7 +38,11 @@ def tokenize_text(text, stopwords=frozenset(), punct="", min_chars=4, phrases=Fa
     Tokenizes a text into a list of words. Filters out stopwords and punctuation.
     """
     words = []
-    if len(text) < 150 or langid.classify(text)[0] != "en" or langid.classify(text)[1] < 500:
+    #print(text)
+    #print(langid.classify(text))
+    #print('\n\nnext\n\n')
+    lang, prob = langid.classify(text)
+    if len(text) < 150 or lang != "en" or prob > -500:
         return words
     if phrases:
         mwes = phrasemachine.get_phrases(text, max_phrase_length=5)

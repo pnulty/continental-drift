@@ -94,7 +94,7 @@ rels <- arrow::read_parquet(file.path('data','continent-all-periods-scored.parqu
 sidebar <- dashboardSidebar(
  # selectizeInput('term', 'Search term(s):', sort(unique(rels$focal)), selected = NULL, multiple = TRUE,
   #               options = NULL),
-  textInput('term', 'Search term(s):', value = "eu europe brexit"),
+  textInput('term', 'Search term(s):', value = "eu europe uk"),
   sliderInput("thresh", label = 'Score threshold ', min = -1, max = 4, value = 0.0, step = 0.1),
   sliderInput("rank", label = 'Rank threshold ', min = 0, max = 50, value = 20, step = 1),
   selectInput('time_period', 'Time Period', choices=c("2009-11","2012-14","2015-17","2018-20"), selected="2015-17"),
